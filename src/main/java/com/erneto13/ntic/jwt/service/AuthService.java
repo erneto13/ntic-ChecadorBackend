@@ -36,21 +36,19 @@ public class AuthService {
         final User user = User.builder()
                 .name(request.name())
                 .email(request.email())
-                .username(request.userName())
+                .username(request.username())
                 .password(passwordEncoder.encode(request.password()))
                 .roles(Set.of(role))
                 .build();
 
         final User savedUser = repository.save(user);
-        final String jwtToken = jwtService.generateToken(savedUser);
         final String refreshToken = jwtService.generateRefreshToken(savedUser);
 
-        saveUserToken(savedUser, jwtToken);
-        return new TokenResponse(jwtToken, refreshToken);
+        return generateTokenResponse(savedUser, refreshToken);
     }
 
     public TokenResponse authenticate(final AuthRequest request) {
-        System.out.println("Intentando autenticar usuario: " + request.username());
+        System.out.println("intentando autenticar :: " + request.username());
 
         try {
             authenticationManager.authenticate(
@@ -59,19 +57,48 @@ public class AuthService {
                             request.password()
                     )
             );
-            System.out.println("Autenticación exitosa para: " + request.username());
+            System.out.println("inicio exitoso :: " + request.username());
 
             final User user = repository.findByUsername(request.username())
                     .orElseThrow();
-            final String accessToken = jwtService.generateToken(user);
             final String refreshToken = jwtService.generateRefreshToken(user);
-            revokeAllUserTokens(user);
-            saveUserToken(user, accessToken);
-            return new TokenResponse(accessToken, refreshToken);
+
+            return generateTokenResponse(user, refreshToken);
         } catch (Exception e) {
-            System.out.println("Error al autenticar usuario: " + request.username());
+            System.out.println("error autenticacion :: " + request.username());
             throw new RuntimeException("Error: " + e.getMessage());
         }
+    }
+
+    public TokenResponse refreshToken(@NotNull final String authentication) {
+        if (authentication == null || !authentication.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Invalid auth header");
+        }
+        final String refreshToken = authentication.substring(7);
+        final String userUsername = jwtService.extractUsername(refreshToken);
+        if (userUsername == null) {
+            return null;
+        }
+
+        final User user = repository.findByUsername(userUsername).orElseThrow();
+        final boolean isTokenValid = jwtService.isTokenValid(refreshToken, user);
+        if (!isTokenValid) {
+            return null;
+        }
+
+        return generateTokenResponse(user, refreshToken);
+    }
+
+    private TokenResponse generateTokenResponse(User user, String refreshToken) {
+        final String accessToken = jwtService.generateToken(user);
+        List<String> roles = user.getRoles().stream()
+                .map(r -> r.getName().name())
+                .toList();
+
+        revokeAllUserTokens(user);
+        saveUserToken(user, accessToken);
+
+        return new TokenResponse(accessToken, refreshToken, roles);
     }
 
     private void saveUserToken(User user, String jwtToken) {
@@ -94,29 +121,5 @@ public class AuthService {
             });
             tokenRepository.saveAll(validUserTokens);
         }
-    }
-
-    public TokenResponse refreshToken(@NotNull final String authentication) {
-
-        if (authentication == null || !authentication.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("Invalid auth header");
-        }
-        final String refreshToken = authentication.substring(7);
-        final String userUsername = jwtService.extractUsername(refreshToken);
-        if (userUsername == null) {
-            return null;
-        }
-
-        final User user = this.repository.findByUsername(userUsername).orElseThrow();
-        final boolean isTokenValid = jwtService.isTokenValid(refreshToken, user);
-        if (!isTokenValid) {
-            return null;
-        }
-
-        final String accessToken = jwtService.generateRefreshToken(user);
-        revokeAllUserTokens(user);
-        saveUserToken(user, accessToken);
-
-        return new TokenResponse(accessToken, refreshToken);
     }
 }

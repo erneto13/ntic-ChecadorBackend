@@ -26,6 +26,26 @@ public class AttendanceService {
         return attendanceRepository.findById(id);
     }
 
+    public Attendance saveAttendance(Attendance attendance) {
+        return attendanceRepository.save(attendance);
+    }
+
+    public Attendance updateAttendance(Long id, Attendance updatedAttendance) {
+        if (attendanceRepository.existsById(id)) {
+            updatedAttendance.setId(Math.toIntExact(id));
+            return attendanceRepository.save(updatedAttendance);
+        }
+        return null;
+    }
+
+    public void deleteAttendance(Long id) {
+        attendanceRepository.deleteById(id);
+    }
+
+    public boolean existsById(Long id) {
+        return attendanceRepository.existsById(id);
+    }
+
     public List<Attendance> getAttendancesByProfessor(Professor professor) {
         return attendanceRepository.findByProfessor(professor);
     }
@@ -48,14 +68,6 @@ public class AttendanceService {
 
     public List<Attendance> getAttendancesByWeeklyTopic(String weeklyTopic) {
         return attendanceRepository.findByWeeklyTopicContaining(weeklyTopic);
-    }
-
-    public Attendance saveAttendance(Attendance attendance) {
-        return attendanceRepository.save(attendance);
-    }
-
-    public void deleteAttendance(Long id) {
-        attendanceRepository.deleteById(id);
     }
 
     public long countAttendancesByProfessorAndDateRange(Professor professor, LocalDate startDate, LocalDate endDate) {

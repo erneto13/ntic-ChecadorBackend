@@ -19,6 +19,14 @@ public class CourseService {
         return courseRepository.findAll();
     }
 
+    public Course updateCourse(Long id, Course updatedCourse) {
+        if (courseRepository.existsById(id)) {
+            updatedCourse.setId(Math.toIntExact(id));
+            return courseRepository.save(updatedCourse);
+        }
+        return null;
+    }
+
     public Optional<Course> getCourseById(Long id) {
         return courseRepository.findById(id);
     }
