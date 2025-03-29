@@ -117,7 +117,7 @@ public class AttendanceController {
 
     // Consulta por supervisor
     @GetMapping("/supervisor/{supervisorId}")
-    public ResponseEntity<List<Attendance>> getAttendancesBySupervisor(@PathVariable Long supervisorId) {
+    public ResponseEntity<List<Attendance>> getAttendancesBySupervisor(@PathVariable Integer supervisorId) {
         Optional<User> supervisor = userService.getUserById(supervisorId);
         if (supervisor.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

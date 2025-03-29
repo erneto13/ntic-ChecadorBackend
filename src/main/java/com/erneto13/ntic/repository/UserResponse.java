@@ -1,7 +1,10 @@
 package com.erneto13.ntic.repository;
 
+import com.erneto13.ntic.model.Role;
+
 public record UserResponse(
-        String name,
-        String email
-) {
+        Integer id, String name,
+        String email,
+        String username,
+        Role.ERole role) {
 }

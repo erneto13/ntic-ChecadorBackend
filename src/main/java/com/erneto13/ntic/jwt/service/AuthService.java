@@ -12,6 +12,7 @@ import com.erneto13.ntic.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +39,7 @@ public class AuthService {
                 .email(request.email())
                 .username(request.username())
                 .password(passwordEncoder.encode(request.password()))
-                .roles(Set.of(role))
+                .role(role)
                 .build();
 
         final User savedUser = repository.save(user);
@@ -81,7 +82,7 @@ public class AuthService {
         }
 
         final User user = repository.findByUsername(userUsername).orElseThrow();
-        final boolean isTokenValid = jwtService.isTokenValid(refreshToken, user);
+        final boolean isTokenValid = jwtService.isTokenValid(refreshToken, (UserDetails) user);
         if (!isTokenValid) {
             return null;
         }
@@ -91,14 +92,13 @@ public class AuthService {
 
     private TokenResponse generateTokenResponse(User user, String refreshToken) {
         final String accessToken = jwtService.generateToken(user);
-        List<String> roles = user.getRoles().stream()
-                .map(r -> r.getName().name())
-                .toList();
+
+        String role = user.getRole().getName().name();
 
         revokeAllUserTokens(user);
         saveUserToken(user, accessToken);
 
-        return new TokenResponse(accessToken, refreshToken, roles);
+        return new TokenResponse(accessToken, refreshToken, List.of(role));
     }
 
     private void saveUserToken(User user, String jwtToken) {

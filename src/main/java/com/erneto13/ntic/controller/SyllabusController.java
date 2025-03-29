@@ -90,7 +90,8 @@ public class SyllabusController {
 
     // Obtener planes de estudio por aprobador
     @GetMapping("/approved-by/{userId}")
-    public ResponseEntity<List<Syllabus>> getSyllabiByApprovedBy(@PathVariable Long userId) {
+    public ResponseEntity<List<Syllabus>> getSyllabiByApprovedBy(@PathVariable Integer userId) {
+        // Cambiado de Long a Integer
         Optional<User> user = userService.getUserById(userId);
         if (user.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -101,7 +102,8 @@ public class SyllabusController {
 
     // Aprobar un plan de estudio
     @PutMapping("/{id}/approve/{userId}")
-    public ResponseEntity<Syllabus> approveSyllabus(@PathVariable Long id, @PathVariable Long userId) {
+    public ResponseEntity<Syllabus> approveSyllabus(@PathVariable Long id, @PathVariable Integer userId) {
+        // userId ya está como Integer
         Optional<User> approver = userService.getUserById(userId);
         if (approver.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

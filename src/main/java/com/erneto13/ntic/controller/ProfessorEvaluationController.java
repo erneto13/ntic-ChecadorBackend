@@ -85,7 +85,7 @@ public class ProfessorEvaluationController {
 
     // Obtener evaluaciones por evaluador
     @GetMapping("/evaluator/{evaluatorId}")
-    public ResponseEntity<List<ProfessorEvaluation>> getEvaluationsByEvaluator(@PathVariable Long evaluatorId) {
+    public ResponseEntity<List<ProfessorEvaluation>> getEvaluationsByEvaluator(@PathVariable Integer evaluatorId) {
         Optional<User> evaluator = userService.getUserById(evaluatorId);
         if (evaluator.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

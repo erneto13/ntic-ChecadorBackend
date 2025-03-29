@@ -23,18 +23,21 @@ public class AppConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
-            final User user = repository.findByUsername(username)
+            User user = repository.findByUsername(username)
                     .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+            String role = "" + user.getRole().getName().name();
+
             return org.springframework.security.core.userdetails.User
                     .builder()
                     .username(user.getUsername())
                     .password(user.getPassword())
-                    .roles(user.getRoles().stream()
-                            .map(role -> role.getName().name())
-                            .toArray(String[]::new))
+                    .roles(role)
                     .build();
         };
     }
+
+
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
