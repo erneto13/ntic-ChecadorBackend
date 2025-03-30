@@ -1,5 +1,7 @@
 package com.erneto13.ntic.controller;
 
+import com.erneto13.ntic.dto.CourseDto;
+import com.erneto13.ntic.dto.ProfessorDto;
 import com.erneto13.ntic.model.Course;
 import com.erneto13.ntic.model.Professor;
 import com.erneto13.ntic.service.CourseService;
@@ -11,9 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/courses")
+@RequestMapping("/api/v1/courses")
 public class CourseController {
 
     @Autowired
@@ -24,9 +27,12 @@ public class CourseController {
 
     // Obtener todos los cursos
     @GetMapping
-    public ResponseEntity<List<Course>> getAllCourses() {
+    public ResponseEntity<List<CourseDto>> getAllCourses() {
         List<Course> courses = courseService.getAllCourses();
-        return new ResponseEntity<>(courses, HttpStatus.OK);
+        List<CourseDto> courseDtos = courses.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(courseDtos, HttpStatus.OK);
     }
 
     // Obtener curso por ID
@@ -41,6 +47,7 @@ public class CourseController {
     @PostMapping
     public ResponseEntity<Course> createCourse(@RequestBody Course course) {
         Course savedCourse = courseService.saveCourse(course);
+        System.out.println("Course created: " + savedCourse);
         return new ResponseEntity<>(savedCourse, HttpStatus.CREATED);
     }
 
@@ -81,5 +88,29 @@ public class CourseController {
     public ResponseEntity<List<Course>> getCoursesByGroupCode(@PathVariable String groupCode) {
         List<Course> courses = courseService.getCoursesByGroupCode(groupCode);
         return new ResponseEntity<>(courses, HttpStatus.OK);
+    }
+
+    // auxiliary method to convert Course to CourseDto
+    private CourseDto convertToDto(Course course) {
+        CourseDto dto = new CourseDto();
+        dto.setId(course.getId());
+        dto.setName(course.getName());
+        dto.setGroupCode(course.getGroupCode());
+        dto.setDescription(course.getDescription());
+        dto.setClassroom(course.getClassroom());
+
+        if (course.getProfessor() != null) {
+            ProfessorDto professorDto = new ProfessorDto();
+            professorDto.setId(course.getProfessor().getId());
+            professorDto.setName(course.getProfessor().getName());
+            professorDto.setEmail(course.getProfessor().getEmail());
+            professorDto.setSpecialty(course.getProfessor().getSpecialty());
+            professorDto.setDepartment(course.getProfessor().getDepartment());
+            professorDto.setRoleName(String.valueOf(course.getProfessor().getRole().getName()));
+
+            dto.setProfessor(professorDto);
+        }
+
+        return dto;
     }
 }

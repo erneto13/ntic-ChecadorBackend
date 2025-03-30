@@ -3,7 +3,6 @@ package com.erneto13.ntic.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 @Entity
@@ -18,9 +17,12 @@ public class Schedule {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name = "professor_id", nullable = false)
+    private Professor professor;
+
     @Column(nullable = false)
-    private DayOfWeek day;
+    private String day;
 
     @Column(nullable = false)
     private LocalTime startTime;

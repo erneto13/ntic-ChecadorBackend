@@ -14,15 +14,15 @@ public class Course {
     @Column(nullable = false)
     private String name;
 
-    @Column
-    private String description;
+    @Column(name = "group_code")
+    private String groupCode;
 
     @ManyToOne
     @JoinColumn(name = "professor_id")
     private Professor professor;
 
     @Column
-    private String groupCode;
+    private String description;
 
     @Column
     private String classroom;

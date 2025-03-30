@@ -11,4 +11,7 @@ import java.util.List;
 public interface CourseRepository extends JpaRepository<Course, Long> {
     List<Course> findByProfessor(Professor professor);
     List<Course> findByGroupCode(String groupCode);
+
+    boolean existsByGroupCode(String groupCode);
+
 }

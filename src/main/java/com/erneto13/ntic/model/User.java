@@ -36,7 +36,4 @@ public class User {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
-
-    @OneToMany(mappedBy = "user")
-    private List<Token> tokens;
 }
