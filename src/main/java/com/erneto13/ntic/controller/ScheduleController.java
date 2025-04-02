@@ -86,7 +86,7 @@ public class ScheduleController {
         return new ResponseEntity<>(schedules, HttpStatus.OK);
     }
 
-    // Obtener horarios por rango de tiempo
+    // Obtener horarios por rango de tiempodad
     @GetMapping("/time-range")
     public ResponseEntity<List<Schedule>> getSchedulesByTimeRange(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) String startTime,
