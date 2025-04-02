@@ -81,7 +81,7 @@ public class ScheduleController {
 
     // Obtener horarios por día de la semana
     @GetMapping("/day/{day}")
-    public ResponseEntity<List<Schedule>> getSchedulesByDay(@PathVariable DayOfWeek day) {
+    public ResponseEntity<List<Schedule>> getSchedulesByDay(@PathVariable String day) {
         List<Schedule> schedules = scheduleService.getSchedulesByDay(day);
         return new ResponseEntity<>(schedules, HttpStatus.OK);
     }
@@ -89,8 +89,8 @@ public class ScheduleController {
     // Obtener horarios por rango de tiempo
     @GetMapping("/time-range")
     public ResponseEntity<List<Schedule>> getSchedulesByTimeRange(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime endTime) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) String startTime,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) String endTime) {
         List<Schedule> schedules = scheduleService.getSchedulesByTimeRange(startTime, endTime);
         return new ResponseEntity<>(schedules, HttpStatus.OK);
     }

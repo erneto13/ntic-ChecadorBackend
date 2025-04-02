@@ -29,11 +29,11 @@ public class ScheduleService {
         return scheduleRepository.findByCourse(course);
     }
 
-    public List<Schedule> getSchedulesByDay(DayOfWeek day) {
+    public List<Schedule> getSchedulesByDay(String day) {
         return scheduleRepository.findByDay(day);
     }
 
-    public List<Schedule> getSchedulesByTimeRange(LocalTime startTime, LocalTime endTime) {
+    public List<Schedule> getSchedulesByTimeRange(String startTime, String endTime) {
         return scheduleRepository.findByStartTimeGreaterThanEqualAndEndTimeLessThanEqual(startTime, endTime);
     }
 
