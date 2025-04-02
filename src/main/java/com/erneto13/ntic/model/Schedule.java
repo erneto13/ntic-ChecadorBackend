@@ -25,8 +25,8 @@ public class Schedule {
     private String day;
 
     @Column(nullable = false)
-    private LocalTime startTime;
+    private String startTime;
 
     @Column(nullable = false)
-    private LocalTime endTime;
+    private String endTime;
 }
