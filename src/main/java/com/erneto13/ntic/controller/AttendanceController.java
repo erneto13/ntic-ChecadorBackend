@@ -1,5 +1,6 @@
 package com.erneto13.ntic.controller;
 
+import com.erneto13.ntic.dto.ResponseDto;
 import com.erneto13.ntic.model.Attendance;
 import com.erneto13.ntic.model.Course;
 import com.erneto13.ntic.model.Professor;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/attendances")
+@RequestMapping("/api/v1/attendance")
 public class AttendanceController {
 
     @Autowired
@@ -50,13 +51,13 @@ public class AttendanceController {
     }
 
     // Crear nueva asistencia
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Attendance> createAttendance(@RequestBody Attendance attendance) {
         Attendance savedAttendance = attendanceService.saveAttendance(attendance);
         return new ResponseEntity<>(savedAttendance, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Attendance> updateAttendance(@PathVariable Long id, @RequestBody Attendance attendance) {
         if (!attendanceService.existsById(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -67,7 +68,7 @@ public class AttendanceController {
     }
 
     // Eliminar asistencia
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteAttendance(@PathVariable Long id) {
         if (!attendanceService.existsById(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -115,14 +116,14 @@ public class AttendanceController {
         return new ResponseEntity<>(attendances, HttpStatus.OK);
     }
 
-    // Consulta por supervisor
-    @GetMapping("/supervisor/{supervisorId}")
-    public ResponseEntity<List<Attendance>> getAttendancesBySupervisor(@PathVariable Integer supervisorId) {
-        Optional<User> supervisor = userService.getUserById(supervisorId);
-        if (supervisor.isEmpty()) {
+    // Consulta por checker
+    @GetMapping("/checker/{checkerId}")
+    public ResponseEntity<List<Attendance>> getAttendancesBychecker(@PathVariable Integer checkerId) {
+        Optional<User> checker = userService.getUserById(checkerId);
+        if (checker.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        List<Attendance> attendances = attendanceService.getAttendancesBySupervisor(supervisor.get());
+        List<Attendance> attendances = attendanceService.getAttendancesByChecker(checker.get());
         return new ResponseEntity<>(attendances, HttpStatus.OK);
     }
 
@@ -145,5 +146,9 @@ public class AttendanceController {
         }
         double percentage = attendanceService.calculateAttendancePercentage(professor.get(), startDate, endDate);
         return new ResponseEntity<>(percentage, HttpStatus.OK);
+    }
+    @GetMapping("/today/{professorId}/{courseId}")
+    public ResponseDto getAttendanceToday(@PathVariable Long professorId, @PathVariable Long courseId) {
+        return attendanceService.getAttendanceToday(professorId, courseId);
     }
 }

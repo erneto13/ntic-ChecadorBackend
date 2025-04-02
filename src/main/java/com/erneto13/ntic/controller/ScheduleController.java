@@ -85,7 +85,11 @@ public class ScheduleController {
         List<Schedule> schedules = scheduleService.getSchedulesByDay(day);
         return new ResponseEntity<>(schedules, HttpStatus.OK);
     }
-
+    @GetMapping("/professor/{professorId}")
+    public ResponseEntity<List<Schedule>> getSchedulesByProfessor(@PathVariable Long professorId) {
+        List<Schedule> schedules = scheduleService.getSchedulesByProfessorId(professorId);
+        return new ResponseEntity<>(schedules, HttpStatus.OK);
+    }
     // Obtener horarios por rango de tiempo
     @GetMapping("/time-range")
     public ResponseEntity<List<Schedule>> getSchedulesByTimeRange(

@@ -14,4 +14,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<Schedule> findByCourse(Course course);
     List<Schedule> findByDay(DayOfWeek day);
     List<Schedule> findByStartTimeGreaterThanEqualAndEndTimeLessThanEqual(LocalTime startTime, LocalTime endTime);
+    List<Schedule> findByProfessorId(Long professorId);
 }

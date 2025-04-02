@@ -44,4 +44,7 @@ public class ScheduleService {
     public void deleteSchedule(Long id) {
         scheduleRepository.deleteById(id);
     }
+    public List<Schedule> getSchedulesByProfessorId(Long professorId) {
+        return scheduleRepository.findByProfessorId(professorId);
+    }
 }

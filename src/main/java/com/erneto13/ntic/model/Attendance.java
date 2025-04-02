@@ -38,6 +38,9 @@ public class Attendance {
     private String weeklyTopic;
 
     @ManyToOne
-    @JoinColumn(name = "supervisor_id")
-    private User supervisor;
+    @JoinColumn(name = "checker_id")
+    private User checker;
+
+    @Column(name = "checker_type")
+    private String checker_type;
 }
