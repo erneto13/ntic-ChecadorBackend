@@ -72,14 +72,13 @@ public class CourseController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // Obtener cursos por profesor
     @GetMapping("/professor/{professorId}")
     public ResponseEntity<List<Course>> getCoursesByProfessor(@PathVariable Long professorId) {
-        Optional<Professor> professor = professorService.getProfessorById(professorId);
-        if (professor.isEmpty()) {
+        Professor professor = professorService.getProfessorById(professorId);
+        if (professor == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        List<Course> courses = courseService.getCoursesByProfessor(professor.get());
+        List<Course> courses = courseService.getCoursesByProfessor(professor);
         return new ResponseEntity<>(courses, HttpStatus.OK);
     }
 
@@ -104,8 +103,6 @@ public class CourseController {
             professorDto.setId(course.getProfessor().getId());
             professorDto.setName(course.getProfessor().getName());
             professorDto.setEmail(course.getProfessor().getEmail());
-            professorDto.setSpecialty(course.getProfessor().getSpecialty());
-            professorDto.setDepartment(course.getProfessor().getDepartment());
             professorDto.setRoleName(String.valueOf(course.getProfessor().getRole().getName()));
 
             dto.setProfessor(professorDto);

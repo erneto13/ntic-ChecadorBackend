@@ -4,10 +4,7 @@ import com.erneto13.ntic.model.Attendance;
 import com.erneto13.ntic.model.Course;
 import com.erneto13.ntic.model.Professor;
 import com.erneto13.ntic.model.User;
-import com.erneto13.ntic.service.AttendanceService;
-import com.erneto13.ntic.service.CourseService;
-import com.erneto13.ntic.service.ProfessorService;
-import com.erneto13.ntic.service.UserService;
+import com.erneto13.ntic.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -76,17 +73,6 @@ public class AttendanceController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // Consulta por profesor
-    @GetMapping("/professor/{professorId}")
-    public ResponseEntity<List<Attendance>> getAttendancesByProfessor(@PathVariable Long professorId) {
-        Optional<Professor> professor = professorService.getProfessorById(professorId);
-        if (professor.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        List<Attendance> attendances = attendanceService.getAttendancesByProfessor(professor.get());
-        return new ResponseEntity<>(attendances, HttpStatus.OK);
-    }
-
     // Consulta por curso
     @GetMapping("/course/{courseId}")
     public ResponseEntity<List<Attendance>> getAttendancesByCourse(@PathVariable Long courseId) {
@@ -139,11 +125,11 @@ public class AttendanceController {
             @PathVariable Long professorId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        Optional<Professor> professor = professorService.getProfessorById(professorId);
-        if (professor.isEmpty()) {
+        Professor professor = professorService.getProfessorById(professorId);
+        if (professor == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        double percentage = attendanceService.calculateAttendancePercentage(professor.get(), startDate, endDate);
+        double percentage = attendanceService.calculateAttendancePercentage(professor, startDate, endDate);
         return new ResponseEntity<>(percentage, HttpStatus.OK);
     }
 }

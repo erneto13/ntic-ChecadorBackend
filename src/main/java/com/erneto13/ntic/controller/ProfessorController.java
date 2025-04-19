@@ -1,6 +1,8 @@
 package com.erneto13.ntic.controller;
 
 import com.erneto13.ntic.model.Professor;
+import com.erneto13.ntic.model.Specialty;
+import com.erneto13.ntic.model.Subject;
 import com.erneto13.ntic.service.ProfessorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/professors")
@@ -17,53 +19,74 @@ public class ProfessorController {
     @Autowired
     private ProfessorService professorService;
 
-    // Obtener todos los profesores
     @GetMapping
-    public ResponseEntity<List<Professor>> getAllProfessors() {
-        List<Professor> professors = professorService.getAllProfessors();
-        return new ResponseEntity<>(professors, HttpStatus.OK);
+    public List<Professor> getAllProfessors() {
+        return professorService.getAllProfessors();
     }
 
-    // Obtener profesor por ID
     @GetMapping("/{id}")
     public ResponseEntity<Professor> getProfessorById(@PathVariable Long id) {
-        Optional<Professor> professor = professorService.getProfessorById(id);
-        return professor.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Professor professor = professorService.getProfessorById(id);
+        return ResponseEntity.ok(professor);
     }
 
-    // Crear nuevo profesor
     @PostMapping
     public ResponseEntity<Professor> createProfessor(@RequestBody Professor professor) {
-        Professor savedProfessor = professorService.saveProfessor(professor);
-        return new ResponseEntity<>(savedProfessor, HttpStatus.CREATED);
+        Professor newProfessor = professorService.createProfessor(professor);
+        return new ResponseEntity<>(newProfessor, HttpStatus.CREATED);
     }
 
-    // Actualizar profesor existente
     @PutMapping("/{id}")
     public ResponseEntity<Professor> updateProfessor(@PathVariable Long id, @RequestBody Professor professor) {
-        if (!professorService.getProfessorById(id).isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        professor.setId(Math.toIntExact(id));
-        Professor updatedProfessor = professorService.saveProfessor(professor);
-        return new ResponseEntity<>(updatedProfessor, HttpStatus.OK);
+        Professor updatedProfessor = professorService.updateProfessor(id, professor);
+        return ResponseEntity.ok(updatedProfessor);
     }
 
-    // Eliminar profesor
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProfessor(@PathVariable Long id) {
-        if (!professorService.getProfessorById(id).isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         professorService.deleteProfessor(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
-    // Obtener profesores por departamento
-    @GetMapping("/department/{department}")
-    public ResponseEntity<List<Professor>> getProfessorsByDepartment(@PathVariable String department) {
-        List<Professor> professors = professorService.getProfessorsByDepartment(department);
-        return new ResponseEntity<>(professors, HttpStatus.OK);
+    @GetMapping("/{id}/specialties")
+    public Set<Specialty> getProfessorSpecialties(@PathVariable Long id) {
+        return professorService.getProfessorSpecialties(id);
+    }
+
+    @PostMapping("/{professorId}/specialties/{specialtyName}")
+    public ResponseEntity<Void> assignProfessorToSpecialty(
+            @PathVariable Long professorId,
+            @PathVariable String specialtyName) {
+        professorService.assignProfessorToSpecialty(professorId, specialtyName);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{professorId}/specialties/{specialtyId}")
+    public ResponseEntity<Void> removeProfessorFromSpecialty(
+            @PathVariable Long professorId,
+            @PathVariable Long specialtyId) {
+        professorService.removeProfessorFromSpecialty(professorId, specialtyId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}/subjects")
+    public Set<Subject> getProfessorSubjects(@PathVariable Long id) {
+        return professorService.getProfessorSubjects(id);
+    }
+
+    @PostMapping("/{professorId}/subjects/{subjectId}")
+    public ResponseEntity<Void> assignProfessorToSubject(
+            @PathVariable Long professorId,
+            @PathVariable Long subjectId) {
+        professorService.assignProfessorToSubject(professorId, subjectId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{professorId}/subjects/{subjectId}")
+    public ResponseEntity<Void> removeProfessorFromSubject(
+            @PathVariable Long professorId,
+            @PathVariable Long subjectId) {
+        professorService.removeProfessorFromSubject(professorId, subjectId);
+        return ResponseEntity.ok().build();
     }
 }
