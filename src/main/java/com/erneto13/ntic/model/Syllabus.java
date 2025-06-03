@@ -13,7 +13,7 @@ public class Syllabus {
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
-    private Course course;
+    private ClassRoom classRoom;
 
     @Column(nullable = false)
     private String title;

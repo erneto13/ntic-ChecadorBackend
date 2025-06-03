@@ -1,10 +1,11 @@
 package com.erneto13.ntic.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -15,29 +16,27 @@ public class Attendance {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "professor_id", nullable = false)
-    private Professor professor;
+    @JoinColumn(name = "class_session_id")
+    @JsonIgnoreProperties("attendances")
+    private ClassSession classSession;
 
-    @ManyToOne
-    @JoinColumn(name = "course_id", nullable = false)
-    private Course course;
-
-    @Column(nullable = false)
     private LocalDate date;
 
-    @Column(nullable = false)
-    private LocalTime checkInTime;
+    private boolean attended;
 
-    @Column
-    private LocalTime checkOutTime;
+    // Verificación por profesor
+    private boolean professorVerified;
+    private LocalDateTime professorVerificationTime;
 
-    @Column(nullable = false)
-    private boolean present;
+    // Verificación por jefe de grupo
+    private boolean headStudentVerified;
+    private LocalDateTime headStudentVerificationTime;
 
-    @Column
-    private String weeklyTopic;
+    // Verificación por checador
+    private boolean checkerVerified;
+    private LocalDateTime checkerVerificationTime;
 
     @ManyToOne
-    @JoinColumn(name = "supervisor_id")
-    private User supervisor;
+    @JoinColumn(name = "checker_id")
+    private User checker;
 }

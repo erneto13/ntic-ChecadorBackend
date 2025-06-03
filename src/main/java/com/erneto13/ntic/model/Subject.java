@@ -1,5 +1,6 @@
 package com.erneto13.ntic.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -18,8 +19,10 @@ public class Subject {
 
     @ManyToOne
     @JoinColumn(name = "career_id")
+    @JsonIgnoreProperties("subjects")
     private Career career;
 
     @ManyToMany(mappedBy = "subjects")
+    @JsonIgnoreProperties("subjects")
     private Set<Professor> professors = new HashSet<>();
 }

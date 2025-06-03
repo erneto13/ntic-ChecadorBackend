@@ -1,9 +1,9 @@
 package com.erneto13.ntic.controller;
 
-import com.erneto13.ntic.model.Course;
+import com.erneto13.ntic.model.ClassRoom;
 import com.erneto13.ntic.model.Syllabus;
 import com.erneto13.ntic.model.User;
-import com.erneto13.ntic.service.CourseService;
+import com.erneto13.ntic.service.ClassRoomService;
 import com.erneto13.ntic.service.SyllabusService;
 import com.erneto13.ntic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class SyllabusController {
     private SyllabusService syllabusService;
 
     @Autowired
-    private CourseService courseService;
+    private ClassRoomService classRoomService;
 
     @Autowired
     private UserService userService;
@@ -68,17 +68,6 @@ public class SyllabusController {
         }
         syllabusService.deleteSyllabus(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    // Obtener planes de estudio por curso
-    @GetMapping("/course/{courseId}")
-    public ResponseEntity<List<Syllabus>> getSyllabiByCourse(@PathVariable Long courseId) {
-        Optional<Course> course = courseService.getCourseById(courseId);
-        if (course.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        List<Syllabus> syllabi = syllabusService.getSyllabiByCourse(course.get());
-        return new ResponseEntity<>(syllabi, HttpStatus.OK);
     }
 
     // Obtener planes de estudio por estado de aprobación

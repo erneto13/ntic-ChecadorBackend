@@ -3,8 +3,6 @@ package com.erneto13.ntic.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalTime;
-
 @Entity
 @Data
 @Table(name = "schedules")
@@ -15,7 +13,7 @@ public class Schedule {
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
-    private Course course;
+    private ClassRoom classRoom;
 
     @ManyToOne
     @JoinColumn(name = "professor_id", nullable = false)

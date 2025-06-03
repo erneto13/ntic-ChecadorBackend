@@ -1,22 +1,26 @@
 package com.erneto13.ntic.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Data
-@Table(name = "specialties")
-public class Specialty {
+@Table(name = "classroom")
+public class ClassRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "specialties")
-    private Set<Professor> professors = new HashSet<>();
+    @Column
+    private String description;
+
 }

@@ -1,9 +1,9 @@
 package com.erneto13.ntic.repository;
 
-import com.erneto13.ntic.model.Schedule;
+import com.erneto13.ntic.model.ClassSession;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+public interface ClassSessionRepository extends JpaRepository<ClassSession, Long> {
 }

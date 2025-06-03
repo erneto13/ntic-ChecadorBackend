@@ -1,6 +1,6 @@
 package com.erneto13.ntic.service;
 
-import com.erneto13.ntic.model.Course;
+import com.erneto13.ntic.model.ClassRoom;
 import com.erneto13.ntic.model.Syllabus;
 import com.erneto13.ntic.model.User;
 import com.erneto13.ntic.repository.SyllabusRepository;
@@ -22,10 +22,6 @@ public class SyllabusService {
 
     public Optional<Syllabus> getSyllabusById(Long id) {
         return syllabusRepository.findById(id);
-    }
-
-    public List<Syllabus> getSyllabiByCourse(Course course) {
-        return syllabusRepository.findByCourse(course);
     }
 
     public List<Syllabus> getSyllabiByApprovalStatus(boolean approved) {

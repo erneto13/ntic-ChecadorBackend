@@ -16,9 +16,6 @@ public class ProfessorService {
     private ProfessorRepository professorRepository;
 
     @Autowired
-    private SpecialtyRepository specialtyRepository;
-
-    @Autowired
     private SubjectRepository subjectRepository;
 
     @Transactional
@@ -53,30 +50,6 @@ public class ProfessorService {
     }
 
     @Transactional
-    public void assignProfessorToSpecialty(Long professorId, String specialtyName) {
-        Professor professor = getProfessorById(professorId);
-        Specialty specialty = specialtyRepository.findByName(specialtyName);
-        if (specialty == null) {
-            specialty = new Specialty();
-            specialty.setName(specialtyName);
-            specialtyRepository.save(specialty);
-        }
-
-        professor.getSpecialties().add(specialty);
-        professorRepository.save(professor);
-    }
-
-    @Transactional
-    public void removeProfessorFromSpecialty(Long professorId, Long specialtyId) {
-        Professor professor = getProfessorById(professorId);
-        Specialty specialty = specialtyRepository.findById(specialtyId)
-                .orElseThrow(() -> new RuntimeException("Especialidad no encontrada"));
-
-        professor.getSpecialties().remove(specialty);
-        professorRepository.save(professor);
-    }
-
-    @Transactional
     public void assignProfessorToSubject(Long professorId, Long subjectId) {
         Professor professor = getProfessorById(professorId);
         Subject subject = subjectRepository.findById(subjectId)
@@ -94,12 +67,6 @@ public class ProfessorService {
 
         professor.getSubjects().remove(subject);
         professorRepository.save(professor);
-    }
-
-    @Transactional
-    public Set<Specialty> getProfessorSpecialties(Long professorId) {
-        Professor professor = getProfessorById(professorId);
-        return professor.getSpecialties();
     }
 
     @Transactional

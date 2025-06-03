@@ -1,7 +1,6 @@
 package com.erneto13.ntic.controller;
 
 import com.erneto13.ntic.model.Professor;
-import com.erneto13.ntic.model.Specialty;
 import com.erneto13.ntic.model.Subject;
 import com.erneto13.ntic.service.ProfessorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,27 +45,6 @@ public class ProfessorController {
     public ResponseEntity<Void> deleteProfessor(@PathVariable Long id) {
         professorService.deleteProfessor(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/{id}/specialties")
-    public Set<Specialty> getProfessorSpecialties(@PathVariable Long id) {
-        return professorService.getProfessorSpecialties(id);
-    }
-
-    @PostMapping("/{professorId}/specialties/{specialtyName}")
-    public ResponseEntity<Void> assignProfessorToSpecialty(
-            @PathVariable Long professorId,
-            @PathVariable String specialtyName) {
-        professorService.assignProfessorToSpecialty(professorId, specialtyName);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{professorId}/specialties/{specialtyId}")
-    public ResponseEntity<Void> removeProfessorFromSpecialty(
-            @PathVariable Long professorId,
-            @PathVariable Long specialtyId) {
-        professorService.removeProfessorFromSpecialty(professorId, specialtyId);
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}/subjects")
