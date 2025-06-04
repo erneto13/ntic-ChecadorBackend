@@ -1,7 +1,7 @@
 package com.erneto13.ntic.controller;
 
+import com.erneto13.ntic.dto.SubjectDTO;
 import com.erneto13.ntic.model.Professor;
-import com.erneto13.ntic.model.Subject;
 import com.erneto13.ntic.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,33 +19,33 @@ public class SubjectController {
     private SubjectService subjectService;
 
     @GetMapping
-    public List<Subject> getAllSubjects() {
+    public List<SubjectDTO> getAllSubjects() {
         return subjectService.getAllSubjects();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Subject> getSubjectById(@PathVariable Long id) {
-        Subject subject = subjectService.getSubjectById(id);
+    public ResponseEntity<SubjectDTO> getSubjectById(@PathVariable Long id) {
+        SubjectDTO subject = subjectService.getSubjectById(id);
         return ResponseEntity.ok(subject);
     }
 
     @PostMapping
-    public ResponseEntity<Subject> createSubject(@RequestBody Subject subject) {
-        Subject newSubject = subjectService.createSubject(subject);
+    public ResponseEntity<SubjectDTO> createSubject(@RequestBody SubjectDTO subject) {
+        SubjectDTO newSubject = subjectService.createSubject(subject);
         return new ResponseEntity<>(newSubject, HttpStatus.CREATED);
     }
 
     @PostMapping("/with-career/{careerId}")
-    public ResponseEntity<Subject> createSubjectWithCareer(
-            @RequestBody Subject subject,
+    public ResponseEntity<SubjectDTO> createSubjectWithCareer(
+            @RequestBody SubjectDTO subject,
             @PathVariable Long careerId) {
-        Subject newSubject = subjectService.createSubjectWithCareer(subject, careerId);
+        SubjectDTO newSubject = subjectService.createSubjectWithCareer(subject, careerId);
         return new ResponseEntity<>(newSubject, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Subject> updateSubject(@PathVariable Long id, @RequestBody Subject subject) {
-        Subject updatedSubject = subjectService.updateSubject(id, subject);
+    public ResponseEntity<SubjectDTO> updateSubject(@PathVariable Long id, @RequestBody SubjectDTO subject) {
+        SubjectDTO updatedSubject = subjectService.updateSubject(id, subject);
         return ResponseEntity.ok(updatedSubject);
     }
 
@@ -69,7 +69,7 @@ public class SubjectController {
     }
 
     @GetMapping("/by-career/{careerId}")
-    public List<Subject> getSubjectsByCareer(@PathVariable Long careerId) {
+    public List<SubjectDTO> getSubjectsByCareer(@PathVariable Long careerId) {
         return subjectService.getSubjectsByCareer(careerId);
     }
 }

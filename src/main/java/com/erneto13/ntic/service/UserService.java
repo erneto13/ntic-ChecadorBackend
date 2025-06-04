@@ -50,6 +50,14 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public List<User> getUsersByRoleName(String roleNameStr) {
+        try {
+            Role.ERole roleName = Role.ERole.valueOf(roleNameStr);
+            return userRepository.findByRoleName(roleName);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Rol no válido: " + roleNameStr);
+        }
+    }
     @Transactional
     public void deleteUser(Integer id) {
         Optional<User> userOpt = getUserById(id);

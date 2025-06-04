@@ -1,44 +1,69 @@
 package com.erneto13.ntic.service;
 
-import com.erneto13.ntic.model.ClassRoom;
-import com.erneto13.ntic.repository.ClassRoomRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+    import com.erneto13.ntic.dto.ClassRoomDTO;
+    import com.erneto13.ntic.model.ClassRoom;
+    import com.erneto13.ntic.repository.ClassRoomRepository;
+    import jakarta.transaction.Transactional;
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+    import java.util.List;
+    import java.util.stream.Collectors;
 
-@Service
-public class ClassRoomService {
+    @Service
+    public class ClassRoomService {
 
-    @Autowired
-    private ClassRoomRepository classRoomRepository;
+        @Autowired
+        private ClassRoomRepository classRoomRepository;
 
-    public List<ClassRoom> getAllClassRooms() {
-        return classRoomRepository.findAll();
-    }
-
-    public ClassRoom updateClassRoom(Long id, ClassRoom updatedClassRoom) {
-        Optional<ClassRoom> existingClassRoomOpt = classRoomRepository.findById(id);
-
-        if (existingClassRoomOpt.isPresent()) {
-            ClassRoom existingClassRoom = existingClassRoomOpt.get();
-            existingClassRoom.setName(updatedClassRoom.getName());
-            existingClassRoom.setDescription(updatedClassRoom.getDescription());
-            return classRoomRepository.save(existingClassRoom);
+        @Transactional
+        public List<ClassRoomDTO> getAllClassRooms() {
+            return classRoomRepository.findAll().stream()
+                    .map(this::convertToDTO)
+                    .collect(Collectors.toList());
         }
-        return null;
-    }
 
-    public Optional<ClassRoom> getClassRoomById(Long id) {
-        return classRoomRepository.findById(id);
-    }
+        @Transactional
+        public ClassRoomDTO getClassRoomById(Long id) {
+            ClassRoom classRoom = classRoomRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Aula no encontrada con id: " + id));
+            return convertToDTO(classRoom);
+        }
 
-    public ClassRoom saveClassRoom(ClassRoom classRoom) {
-        return classRoomRepository.save(classRoom);
-    }
+        @Transactional
+        public ClassRoomDTO createClassRoom(ClassRoomDTO dto) {
+            ClassRoom classRoom = new ClassRoom();
+            classRoom.setName(dto.getName());
+            classRoom.setDescription(dto.getDescription());
 
-    public void deleteClassRoom(Long id) {
-        classRoomRepository.deleteById(id);
+            ClassRoom savedClassRoom = classRoomRepository.save(classRoom);
+            return convertToDTO(savedClassRoom);
+        }
+
+        @Transactional
+        public ClassRoomDTO updateClassRoom(Long id, ClassRoomDTO dto) {
+            ClassRoom classRoom = classRoomRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Aula no encontrada con id: " + id));
+
+            classRoom.setName(dto.getName());
+            classRoom.setDescription(dto.getDescription());
+
+            ClassRoom updatedClassRoom = classRoomRepository.save(classRoom);
+            return convertToDTO(updatedClassRoom);
+        }
+
+        @Transactional
+        public void deleteClassRoom(Long id) {
+            ClassRoom classRoom = classRoomRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Aula no encontrada con id: " + id));
+            classRoomRepository.delete(classRoom);
+        }
+
+        private ClassRoomDTO convertToDTO(ClassRoom classRoom) {
+            ClassRoomDTO dto = new ClassRoomDTO();
+            dto.setId(classRoom.getId());
+            dto.setName(classRoom.getName());
+            dto.setDescription(classRoom.getDescription());
+            return dto;
+        }
     }
-}

@@ -1,8 +1,6 @@
 package com.erneto13.ntic.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,6 +12,10 @@ import java.util.Set;
 @Entity
 @Data
 @Table(name = "careers")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id"
+)
 public class Career {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -59,6 +59,24 @@ public class UserController {
         }
     }
 
+    @GetMapping("/role/{roleName}")
+    public ResponseEntity<List<UserResponse>> getUsersByRole(@PathVariable String roleName) {
+        try {
+            List<UserResponse> users = userService.getUsersByRoleName(roleName)
+                    .stream()
+                    .map(user -> new UserResponse(
+                            user.getId(),
+                            user.getName(),
+                            user.getEmail(),
+                            user.getUsername(),
+                            user.getRole().getName()))
+                    .toList();
+            return ResponseEntity.ok(users);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
         userService.deleteUser(id);

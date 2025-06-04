@@ -1,6 +1,7 @@
 package com.erneto13.ntic.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,7 +18,7 @@ public class Subject {
 
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "career_id")
     @JsonIgnoreProperties("subjects")
     private Career career;

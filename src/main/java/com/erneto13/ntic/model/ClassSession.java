@@ -1,6 +1,8 @@
 package com.erneto13.ntic.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -12,6 +14,10 @@ import java.util.Set;
 @Entity
 @Data
 @Table(name = "class_sessions")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id"
+)
 public class ClassSession {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,13 +43,8 @@ public class ClassSession {
     @JsonIgnoreProperties("classSessions")
     private ClassRoom classRoom;
 
-    @Enumerated(EnumType.STRING)
-    private DayOfWeek dayOfWeek;
+    private String dayOfWeek;
 
-    private LocalTime startTime;
-    private LocalTime endTime;
-
-    @OneToMany(mappedBy = "classSession")
-    @JsonIgnoreProperties("classSession")
-    private Set<Attendance> attendances = new HashSet<>();
+    private String startTime;
+    private String endTime;
 }

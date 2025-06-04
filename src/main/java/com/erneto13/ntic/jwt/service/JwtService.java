@@ -42,7 +42,11 @@ public class JwtService {
     private String buildToken(final User user, final long expiration) {
         return Jwts
                 .builder()
-                .claims(Map.of("name", user.getUsername()))
+                .claims(Map.of(
+                        "id", user.getId(),
+                        "name", user.getUsername(),
+                        "role", user.getRole()
+                ))
                 .subject(user.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiration))

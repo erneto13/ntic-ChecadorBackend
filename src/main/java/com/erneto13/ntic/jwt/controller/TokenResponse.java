@@ -8,8 +8,6 @@ public record TokenResponse(
         @JsonProperty("access_token")
         String accessToken,
         @JsonProperty("refresh_token")
-        String refreshToken,
-        @JsonProperty("roles")
-        List<String> roles
+        String refreshToken
 ) {
 }

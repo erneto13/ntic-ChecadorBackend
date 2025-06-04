@@ -93,12 +93,10 @@ public class AuthService {
     private TokenResponse generateTokenResponse(User user, String refreshToken) {
         final String accessToken = jwtService.generateToken(user);
 
-        String role = user.getRole().getName().name();
-
         revokeAllUserTokens(user);
         saveUserToken(user, accessToken);
 
-        return new TokenResponse(accessToken, refreshToken, List.of(role));
+        return new TokenResponse(accessToken, refreshToken);
     }
 
     private void saveUserToken(User user, String jwtToken) {

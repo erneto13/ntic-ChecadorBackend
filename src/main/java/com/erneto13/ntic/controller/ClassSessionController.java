@@ -1,5 +1,6 @@
 package com.erneto13.ntic.controller;
 
+import com.erneto13.ntic.dto.ClassSessionDTO;
 import com.erneto13.ntic.model.ClassSession;
 import com.erneto13.ntic.service.ClassSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,9 @@ public class ClassSessionController {
     }
 
     @PostMapping
-    public ResponseEntity<ClassSession> createClassSession(@RequestBody ClassSession classSession) {
-        ClassSession newClassSession = classSessionService.createClassSession(classSession);
-        return new ResponseEntity<>(newClassSession, HttpStatus.CREATED);
+    public ResponseEntity<ClassSessionDTO> createClassSession(@RequestBody ClassSessionDTO dto) {
+        ClassSessionDTO created = classSessionService.createClassSession(dto);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
@@ -33,4 +34,11 @@ public class ClassSessionController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<ClassSession>> getClassSessionsByDayAndStartTime(
+            @RequestParam String dayOfWeek,
+            @RequestParam String startTime) {
+        List<ClassSession> sessions = classSessionService.getClassSessionsByDayAndStartTime(dayOfWeek, startTime);
+        return ResponseEntity.ok(sessions);
+    }
 }
