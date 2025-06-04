@@ -47,4 +47,24 @@ public class AttendanceController {
         attendanceService.deleteAttendance(Long.valueOf(id));
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{id}/verify/professor")
+    public ResponseEntity<AttendanceDTO> verifyAttendanceByProfessor(@PathVariable Integer id) {
+        AttendanceDTO verified = attendanceService.verifyAttendanceByProfessor(Long.valueOf(id));
+        return ResponseEntity.ok(verified);
+    }
+
+    @PostMapping("/{id}/verify/head-student")
+    public ResponseEntity<AttendanceDTO> verifyAttendanceByHeadStudent(@PathVariable Integer id) {
+        AttendanceDTO verified = attendanceService.verifyAttendanceByHeadStudent(Long.valueOf(id));
+        return ResponseEntity.ok(verified);
+    }
+
+    @PostMapping("/{id}/verify/checker")
+    public ResponseEntity<AttendanceDTO> verifyAttendanceByChecker(
+            @PathVariable Integer id,
+            @RequestParam Long checkerId) {
+        AttendanceDTO verified = attendanceService.verifyAttendanceByChecker(Long.valueOf(id), checkerId);
+        return ResponseEntity.ok(verified);
+    }
 }

@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -105,5 +106,52 @@ public class AttendanceService {
         }
 
         return dto;
+    }
+
+    @Transactional
+    public AttendanceDTO verifyAttendanceByProfessor(Long attendanceId) {
+        Attendance attendance = attendanceRepository.findById(attendanceId)
+                .orElseThrow(() -> new RuntimeException("Asistencia no encontrada con id: " + attendanceId));
+
+        if (attendance.isProfessorVerified()) {
+            throw new RuntimeException("Usted ya ha verificado esta asistencia");
+        }
+
+        attendance.setProfessorVerified(true);
+        attendance.setProfessorVerificationTime(LocalDateTime.from(LocalTime.now()));
+
+        return convertToDTO(attendanceRepository.save(attendance));
+    }
+
+    @Transactional
+    public AttendanceDTO verifyAttendanceByHeadStudent(Long attendanceId) {
+        Attendance attendance = attendanceRepository.findById(attendanceId)
+                .orElseThrow(() -> new RuntimeException("Asistencia no encontrada con id: " + attendanceId));
+
+        if (attendance.isHeadStudentVerified()) {
+            throw new RuntimeException("Usted ya ha verificado esta asistencia");
+        }
+
+        attendance.setHeadStudentVerified(true);
+        attendance.setHeadStudentVerificationTime(LocalDateTime.from(LocalTime.now()));
+
+        return convertToDTO(attendanceRepository.save(attendance));
+    }
+
+    @Transactional
+    public AttendanceDTO verifyAttendanceByChecker(Long attendanceId, Long checkerId) {
+        Attendance attendance = attendanceRepository.findById(attendanceId)
+                .orElseThrow(() -> new RuntimeException("Asistencia no encontrada con id: " + attendanceId));
+
+        if (attendance.isCheckerVerified()) {
+            throw new RuntimeException("Usted ya ha verificado esta asistencia");
+        }
+
+        attendance.setCheckerVerified(true);
+        attendance.setCheckerVerificationTime(LocalDateTime.from(LocalTime.now()));
+        attendance.setChecker(userRepository.findById(Math.toIntExact(checkerId))
+                .orElseThrow(() -> new RuntimeException("Usuario checador no encontrado")));
+
+        return convertToDTO(attendanceRepository.save(attendance));
     }
 }
